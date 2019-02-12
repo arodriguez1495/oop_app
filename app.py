@@ -3,10 +3,12 @@ import pandas as pd
 from teacher import Teacher
 from classes import Admin
 
-#c.execute('SELECT * FROM admin_users')
-#c.fetchall()
-#c.execute('SELECT * FROM teachers')
-#c.fetchall()[0]
+conn = sqlite3.connect('school.db')
+c = conn.cursor()
+c.execute('SELECT * FROM admin_users')
+c.fetchall()
+c.execute('SELECT * FROM teachers')
+c.fetchall()[3]
 
 def authentication():
     conn = sqlite3.connect('school.db')
@@ -41,44 +43,49 @@ def authentication():
 
 def teacher_app(user):
     print("""
+    Opciones disponibles:
         1. Actas de asignaturas\n
         2. Consultas de alumnos\n
         3. Estadisticas de calificaciones\n
     """)
-    sel_menu_0 = input()
+    sel_menu_0 = int(input("Ingrese su seleccion: "))
+    print(sel_menu_0)
+    print(sel_menu_0 == 1)
     if sel_menu_0 == 1:
         print("""
+        Opciones disponibles:
             1. Actas por asignaturas\n
             2. Integrar grupos por asginatura\n
             3. Volver al menu inicial
             """)
-        sel_menu_1_1 = input()
+        sel_menu_1_1 = int(input("Ingrese su seleccion: "))
         if sel_menu_1_1 == 1: user.get_records()
         elif sel_menu_1_1 == 2: user.get_records(grouped=True)
         elif sel_menu_1_1 == 3: teacher_app(user)
 
         print("""
-        1. Completar notas\n
-        2. Anadir un alumno\n
-        3. Borrar un alumno\n
-        4. Exportar acta\n
-        5. Importar acta\n
-        6. Imprimir acta y lista provisional de alumnos\n
-        7. Volver al menu inicial
+        Opciones disponibles:
+            1. Completar notas\n
+            2. Anadir un alumno\n
+            3. Borrar un alumno\n
+            4. Exportar acta\n
+            5. Importar acta\n
+            6. Imprimir acta y lista provisional de alumnos\n
+            7. Volver al menu inicial
         """)
-        sel_menu_1_2 = input()
-        if sel_menu_1_2 == 1: user.set_grades(subject_id, student_id, grade)
-        elif sel_menu_1_2 == 2: user.add_student(subject_id, student_id)
-        elif sel_menu_1_2 == 3: user.remove_student(subject_id, student_id)
-        elif sel_menu_1_1 == 1 and sel_menu_1_2 == 4: user.export_records()
-        elif sel_menu_1_1 == 2 and sel_menu_1_2 == 4: user.export_records(grouped=True)
-        elif sel_menu_1_1 == 1 and sel_menu_1_2 == 5: user.import_records()
-        elif sel_menu_1_1 == 2 and sel_menu_1_2 == 5: user.import_records(grouped=True)
+        sel_menu_1_2 = int(input("Ingrese su seleccion: "))
+        if sel_menu_1_2 == 1: user.set_grades(input("Enter subject id"), input("Enter student id"), input("Enter grade"))
+        elif sel_menu_1_2 == 2: user.add_student(input("Enter subject id"), input("Enter student id"))
+        elif sel_menu_1_2 == 3: user.remove_student(input("Enter subject id"), input("Enter student id"))
+        elif sel_menu_1_1 == 1 and sel_menu_1_2 == 4: user.get_records(export=True)
+        elif sel_menu_1_1 == 2 and sel_menu_1_2 == 4: user.get_records(grouped=True, export=True)
+        elif sel_menu_1_1 == 1 and sel_menu_1_2 == 5: user.import_records(input("Enter path to file"))
+        elif sel_menu_1_1 == 2 and sel_menu_1_2 == 5: user.import_records(input("Enter path to file"), grouped=True)
         elif sel_menu_1_2 == 6: user.print_records()
 
-    elif sel_menu_0 == 2: user.get_student_info(student_id)
+    elif sel_menu_0 == 2: user.get_student_info(input("Enter student id: "))
 
-    elif sel_menu_0 == 3: user.get_statistics()
+    elif sel_menu_0 == 3: user.get_statistics(group_id=input("Enter group id: "), subject_id=input("Enter subject id: "))
 
 current_user = authentication()
 if type(current_user) == Teacher: teacher_app(current_user)

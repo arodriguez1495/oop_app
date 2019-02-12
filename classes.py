@@ -1,25 +1,16 @@
-class Student:
-
-    def __init__(self, code, first_name, last_name):
-        self.code = code
-        self.first_name = first_name
-        self.last_name = last_name
-
-class Subject:
-
-    def __init__(self, course, campus, name, semester, group, teacher=None):
-        self.course = course
-        self.campus = campus
-        self.name = name
-        self.semester = semester
-        self.group = group
-        self.teacher = teacher
-
-class Admin:
+class Admin(Teacher):
 
     def __init__(self, id, username, password, first_name, last_name):
-            self.id = id
-            self.username = username
-            self.password = password
-            self.first_name = first_name
-            self.last_name = last_name
+            super().__init__(self, id, username, password, first_name, last_name)
+
+    def manage_students(self, how, student_id):
+        return
+
+    def manage_subjects(self, how, subject_id):
+        return
+
+    def manage_groups(self, how, group_id):
+        return
+
+    def get_historical_records(self, students_id):
+        return

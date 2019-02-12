@@ -59,9 +59,12 @@ def teacher_app(user):
             3. Volver al menu inicial
             """)
         sel_menu_1_1 = int(input("Ingrese su seleccion: "))
-        if sel_menu_1_1 == 1: user.get_records()
-        elif sel_menu_1_1 == 2: user.get_records(grouped=True)
-        elif sel_menu_1_1 == 3: teacher_app(user)
+        if sel_menu_1_1 == 1:
+            user.get_records()
+        elif sel_menu_1_1 == 2:
+            user.get_records(grouped=True)
+        elif sel_menu_1_1 == 3:
+            teacher_app(user)
 
         print("""
         Opciones disponibles:
@@ -82,10 +85,17 @@ def teacher_app(user):
         elif sel_menu_1_1 == 1 and sel_menu_1_2 == 5: user.import_records(input("Enter path to file"))
         elif sel_menu_1_1 == 2 and sel_menu_1_2 == 5: user.import_records(input("Enter path to file"), grouped=True)
         elif sel_menu_1_2 == 6: user.print_records()
+        teacher_app(user)
 
-    elif sel_menu_0 == 2: user.get_student_info(input("Enter student id: "))
+    elif sel_menu_0 == 2:
+        user.get_student_info(input("Enter student id: "))
+        teacher_app(user)
 
-    elif sel_menu_0 == 3: user.get_statistics(group_id=input("Enter group id: "), subject_id=input("Enter subject id: "))
+    elif sel_menu_0 == 3:
+        user.get_statistics(group_id=input("Enter group id: "), subject_id=input("Enter subject id: "))
+        teacher_app(user)
+
+    teacher_app(user)
 
 current_user = authentication()
 if type(current_user) == Teacher: teacher_app(current_user)

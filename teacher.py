@@ -18,7 +18,7 @@ class Teacher:
         self.conn = sqlite3.connect('school.db')
         self.c = self.conn.cursor()
 
-    def get_records(self, grouped=False, export=False):
+    def get_records(self, grouped=False, export=False, print=False):
         '''The teacher receives the blank minutes of the subjects he is
            responsible for.'''
 
@@ -51,7 +51,11 @@ class Teacher:
 
         if export: writer.save()
 
-        return print('records printed')
+        if print:
+            if platform.system() == 'Windows': os.startfile(filename, 'print')
+            else: print('This functionallity its only available in Windows OS')
+
+        return print('records printed\n')
 
     def set_grades(self, subject_id, student_id, grade):
         sql = ''' UPDATE grades
@@ -60,12 +64,14 @@ class Teacher:
                   AND student_id = ?'''
 
         self.c.execute(sql, (grade, subject_id, student_id))
+        self.conn.commit()
         return print('grade updated')
 
     def add_student(self, subject_id, student_id):
         sql = '''INSERT INTO grades(student_id, subject_id)
                  VALUES (?, ?)'''
         self.c.execute(sql, (student_id, subject_id))
+        self.c.commit()
         return print('student added to subject')
 
     def remove_student(self, subject_id, student_id):
@@ -73,6 +79,7 @@ class Teacher:
                   WHERE subject_id = ?
                   AND student_id = ? '''
         self.c.execute(sql, (subject_id, student_id))
+        self.c.commit()
         return print('student removed from record')
 
     def import_records(self, path_to_file, grouped=False):
@@ -84,17 +91,18 @@ class Teacher:
         grades['subject_id'] = subject_id
         grades.to_sql('temp_grades', self.conn, if_exists='replace')
 
-        sql = ''' UPDATE grades
-                  SET grade = temp_grades.grade
-                  FROM temp_grades
-                  WHERE subject_id = temp_grades.subject_id
-                  AND student_id = t.id'''
+        sql = ''' UPDATE grades SET grade = (SELECT t.grade
+                                             FROM temp_grades AS t
+                                             WHERE t.id == grades.student_id
+                                             AND t.subject_id = grades.subject_id) '''
 
         self.c.execute(sql)
+        self.conn.commit()
         return print('grades updated via file')
 
     def print_records(self, grouped=False):
-        ### STILL ON WORK ###
+        if platform.system() == 'Windows': os.startfile('~/Downloads/arts_grades.xlsx', 'print')
+        else: print('This functionallity its only available in Windows OS')
         return
 
     def get_student_info(self, student_id):

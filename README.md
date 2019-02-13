@@ -27,4 +27,4 @@ Ignorar los siguientes archivos:
 1. example-record.xlsx: archivo que use para testear la importacion y exportacion de actas a Excel
 2. gui.py: archivo que deje a medias para hacer una interfaz grafica fuera de terminal
 3. sqlite.py: archivo que utilize para crear la bd (tabla, conexiones y generar datos ficticios)
-4. test.pt: archivo que utilize para probar y revisar errores del codigo
+4. test.py: archivo que utilize para probar y revisar errores del codigo

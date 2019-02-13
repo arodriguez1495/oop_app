@@ -24,7 +24,7 @@ c = conn.cursor()
 c.execute('SELECT * FROM admin_users')
 c.fetchall()
 c.execute('SELECT * FROM teachers')
-c.fetchall()[3]
+c.fetchall()[1]
 
 sql = ''' UPDATE grades SET grade = (SELECT t.grade
                                      FROM temp_grades AS t

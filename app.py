@@ -78,7 +78,7 @@ def teacher_app(user):
         elif sel_menu_1_1 == 2 and sel_menu_1_2 == 4: user.get_records(grouped=True, export=True)
         elif sel_menu_1_1 == 1 and sel_menu_1_2 == 5: user.import_records(input("Ingrese la ruta al archivo que desea importar\n(Formato: archivo excel tipo acta de una hoja):\n "))
         elif sel_menu_1_1 == 2 and sel_menu_1_2 == 5: user.import_records(input("Ingrese la ruta al archivo que desea importar\n(Formato: archivo excel tipo acta de una hoja):\n "), grouped=True)
-        elif sel_menu_1_2 == 6: user.print_records()
+        elif sel_menu_1_2 == 6: user.get_records(print_=True)
         teacher_app(user)
 
     elif sel_menu_0 == 2:

@@ -18,7 +18,7 @@ class Teacher:
         self.conn = sqlite3.connect('school.db')
         self.c = self.conn.cursor()
 
-    def get_records(self, grouped=False, export=False, print=False):
+    def get_records(self, grouped=False, export=False, print_=False):
         '''The teacher receives the blank minutes of the subjects he is
            responsible for.'''
 
@@ -51,7 +51,7 @@ class Teacher:
 
         if export: writer.save()
 
-        if print:
+        if print_:
             if platform.system() == 'Windows': os.startfile(filename, 'print')
             else: print('Esta funcionalidad solo esta disponible en Sistemas Operativos Windows')
 

@@ -2,10 +2,8 @@
 
 Para utilizar esta aplicacion deben tener instalado Python 3 o superior.  
 
-Clonar el repositorio mediante terminal (linux y mac) utilizando el comando:  
+Clonar el repositorio mediante terminal (linux y mac) o cmd (windows) utilizando el comando:  
 $ git clone https://github.com/arodriguez1495/oop_app.git
-
-Para el caso de windows debes instalar git (https://github.com/arodriguez1495/oop_app.git) y utilizar el mismo comando.  
 
 Luego entrar a la carpeta:  
 $ cd oop_app/  

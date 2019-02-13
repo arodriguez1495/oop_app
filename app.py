@@ -1,24 +1,18 @@
+# Dependencies
 import sqlite3
 import pandas as pd
+from getpass import getpass
 from teacher import Teacher
-from classes import Admin
+from admin import Admin
 
-conn = sqlite3.connect('school.db')
-c = conn.cursor()
-c.execute('SELECT * FROM admin_users')
-c.fetchall()
-c.execute('SELECT * FROM teachers')
-c.fetchall()[3]
-
+# Main functions
 def authentication():
     conn = sqlite3.connect('school.db')
     c = conn.cursor()
-    print('Hi, please insert your credentials')
-    username = input('Username:')
-    password = input('Password:')
-    #c.execute('SELECT count(*) FROM teachers WHERE username = "{}" AND password  = "{}"'.format(username,password))
-    #count = c.fetchall()[0][0]
-    #if count == 1:
+    print('Hola, por favor ingresa tus credenciales')
+    username = input('Usuario: ')
+    password = getpass('Contraseña: ')
+
     c.execute('SELECT id, username, password, first_name, last_name FROM teachers WHERE username = "{}" AND password  = "{}"'.format(username,password))
     data_readed = c.fetchall()
     if len(data_readed)>0:
@@ -32,7 +26,7 @@ def authentication():
         data_readed = c.fetchall()
         if len(data_readed)>0:
             user_data = data_readed[0]
-            current_user = Teacher(user_data[0], user_data[1], user_data[2], user_data[3], user_data[4])
+            current_user = Admin(user_data[0], user_data[1], user_data[2], user_data[3], user_data[4])
             c.close()
             conn.close()
             return current_user
@@ -77,43 +71,88 @@ def teacher_app(user):
             7. Volver al menu inicial
         """)
         sel_menu_1_2 = int(input("Ingrese su seleccion: "))
-        if sel_menu_1_2 == 1: user.set_grades(input("Enter subject id"), input("Enter student id"), input("Enter grade"))
-        elif sel_menu_1_2 == 2: user.add_student(input("Enter subject id"), input("Enter student id"))
-        elif sel_menu_1_2 == 3: user.remove_student(input("Enter subject id"), input("Enter student id"))
+        if sel_menu_1_2 == 1: user.set_grades(input("Ingrese el id de la asignatura: "), input("Ingrese el id del estudiante: "), input("Ingrese la nota: "))
+        elif sel_menu_1_2 == 2: user.add_student(input("Ingrese el id de la asignatura: "), input("Ingrese el id del estudiante: "))
+        elif sel_menu_1_2 == 3: user.remove_student(input("Ingrese el id de la asignatura: "), input("Ingrese el id del estudiante: "))
         elif sel_menu_1_1 == 1 and sel_menu_1_2 == 4: user.get_records(export=True)
         elif sel_menu_1_1 == 2 and sel_menu_1_2 == 4: user.get_records(grouped=True, export=True)
-        elif sel_menu_1_1 == 1 and sel_menu_1_2 == 5: user.import_records(input("Enter path to file"))
-        elif sel_menu_1_1 == 2 and sel_menu_1_2 == 5: user.import_records(input("Enter path to file"), grouped=True)
+        elif sel_menu_1_1 == 1 and sel_menu_1_2 == 5: user.import_records(input("Ingrese la ruta al archivo que desea importar\n(Formato: archivo excel tipo acta de una hoja):\n "))
+        elif sel_menu_1_1 == 2 and sel_menu_1_2 == 5: user.import_records(input("Ingrese la ruta al archivo que desea importar\n(Formato: archivo excel tipo acta de una hoja):\n "), grouped=True)
         elif sel_menu_1_2 == 6: user.print_records()
         teacher_app(user)
 
     elif sel_menu_0 == 2:
-        user.get_student_info(input("Enter student id: "))
+        user.get_student_info(input("Ingrese el id del estudiante: "))
         teacher_app(user)
 
     elif sel_menu_0 == 3:
-        user.get_statistics(group_id=input("Enter group id: "), subject_id=input("Enter subject id: "))
+        user.get_statistics(group_id=input("Ingrese el id del grupo: "), subject_id=input("Ingrese el id de la asignatura: "))
         teacher_app(user)
 
     teacher_app(user)
 
-current_user = authentication()
+def admin_app(user):
+    print('''
+    Menu Inicial:
+        1. Opciones de profesor\n
+        2. Opciones de administrador\n
+    Para salir de la aplicacion utilice Ctrl+C''')
+    sel_menu_0 = int(input("Ingrese su selección: "))
+    if sel_menu_0 == 1: teacher_app(user)
+    elif sel_menu_0 == 2:
+        print('''
+        Opciones de administrador:
+            1. Gestión ABMC alumnos\n
+            2. Gestión ABMC asignaturas\n
+            3. Gestión ABMC grupos\n
+            4. Consulta de historial académico\n
+            5. Volver al menú inicial''')
+        sel_menu_1 = int(input("Ingrese su selección: "))
+        if sel_menu_1 == 1:
+            print(''' ¿Qué operación desea realizar?\n
+            1. Alta\n
+            2. Baja\n
+            3. Modificación\n
+            4. Consulta\n
+            5. Volver a menu inicial ''')
+            action = int(input("Ingrese su selección: "))
+            if action == 1: user.manage_students(operation='insert')
+            elif action == 2: user.manage_students(operation='delete')
+            elif action == 3: user.manage_students(operation='update')
+            elif action == 4: user.manage_students(operation='select')
+
+        elif sel_menu_1 == 2:
+            print(''' ¿Qué operación desea realizar?\n
+                                1. Alta\n
+                                2. Baja\n
+                                3. Modificación\n
+                                4. Consulta\n
+                                5. Volver a menu inicial ''')
+            action = int(input("Ingrese su selección: "))
+            if action == 1: user.manage_subjects(operation='insert')
+            elif action == 2: user.manage_subjects(operation='delete')
+            elif action == 3: user.manage_subjects(operation='update')
+            elif action == 4: user.manage_subjects(operation='select')
+
+        elif sel_menu_1 == 3:
+            print(''' ¿Qué operación desea realizar?\n
+                                1. Alta\n
+                                2. Baja\n
+                                3. Modificación\n
+                                4. Consulta\n
+                                5. Volver a menu inicial ''')
+            action = int(input("Ingrese su selección: "))
+            if action == 1: user.manage_groups(operation='insert')
+            elif action == 2: user.manage_groups(operation='delete')
+            elif action == 3: user.manage_groups(operation='update')
+            elif action == 4: user.manage_groups(operation='select')
+
+        elif sel_menu_1 == 4: user.get_historical_records(input("Ingrese el id del alumno: "))
+        admin_app(user)
+
+current_user = authentication() # Ask user for credentials
+
+# Depending on user class give a different app view
 if type(current_user) == Teacher: teacher_app(current_user)
 elif type(current_user) == Admin: admin_app(current_user)
-else: 'Closing app ...'
-
-
-##################### MUST LOCATE THIS FUNCTION IN THE CORRECT CLASS
-
-def build_blank_record():
-    blank_head = pd.DataFrame(index=["Course", "Campus", "Nombre", "Semester", "Group"])
-    blank_grades = pd.DataFrame(columns=["ID","DNI","First Name","Last Name","Grade"])
-
-    writer = pd.ExcelWriter('example-record.xlsx', engine='xlsxwriter')
-    c.fetchall()
-    blank_head.to_excel(writer, sheet_name='Course1')
-    blank_grades.to_excel(writer, index=False, startrow=len(blank_head.index)+2, sheet_name='Course1')
-
-    writer.save()
-
-##################### MUST LOCATE THIS FUNCTION IN THE CORRECT CLASS
+else: 'Usuario no reconocido ... Cerrando aplicación  ...'

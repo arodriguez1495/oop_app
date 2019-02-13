@@ -150,9 +150,9 @@ def admin_app(user):
         elif sel_menu_1 == 4: user.get_historical_records(input("Ingrese el id del alumno: "))
         admin_app(user)
 
-current_user = authentication() # Ask user for credentials
-
-# Depending on user class give a different app view
-if type(current_user) == Teacher: teacher_app(current_user)
-elif type(current_user) == Admin: admin_app(current_user)
-else: 'Usuario no reconocido ... Cerrando aplicación  ...'
+if __name__ == "__main__":
+    current_user = authentication() # Ask user for credentials
+    # Depending on user class give a different app view
+    if type(current_user) == Teacher: teacher_app(current_user)
+    elif type(current_user) == Admin: admin_app(current_user)
+    else: 'Usuario no reconocido ... Cerrando aplicación  ...'

@@ -23,14 +23,14 @@ class Teacher:
            responsible for.'''
 
         if export:
-            filename  = '{}-records-{:%d-%m-%Y--%h-%m-%s}.xlsx'.format(self.username,datetime.now())
-            writer = pd.ExcelWriter(filename, engine='xlsxwriter')
-            print('Saved at', filename)
+            filename  = '{}-records-{:%d-%m-%Y_%H-%M-%S}.xlsx'.format(self.username, datetime.now()) # Create name for exported record
+            writer = pd.ExcelWriter(filename, engine='xlsxwriter') # excel writer object
+            print('Guardado en', filename)
         # Read tables from database
         subjects = pd.read_sql('SELECT * FROM subjects WHERE teacher_id = "{}"'.format(self.id), self.conn) # select specific teacher subjects
         students = pd.read_sql('SELECT * FROM students', self.conn) # select all students
 
-        if subjects.shape[0] < 1: print('No subject found')
+        if subjects.shape[0] < 1: print('No se encontraron asignaturas')
         else:
             for i, row in subjects.iterrows():
                 # Report grades
@@ -42,10 +42,10 @@ class Teacher:
                     row[["course", "campus", "name", "semester", "group_id"]].to_excel(writer, header=False, sheet_name=row['name']) # Report subject info
                     complete_grades.to_excel(writer, index=False, startrow=7, sheet_name=row['name']) # make the report in excel
                 else:
-                    print('Subject Information:\n')
+                    print('Informacion de la asignatura:\n')
                     print(row[["course", "campus", "name", "semester", "group_id"]]) # Report subject info
                     print()
-                    print('Grades:\n')
+                    print('Notas:\n')
                     print(complete_grades)
                     print()
 
@@ -53,9 +53,9 @@ class Teacher:
 
         if print:
             if platform.system() == 'Windows': os.startfile(filename, 'print')
-            else: print('This functionallity its only available in Windows OS')
+            else: print('Esta funcionalidad solo esta disponible en Sistemas Operativos Windows')
 
-        return print('records printed\n')
+        return print('registros OK\n')
 
     def set_grades(self, subject_id, student_id, grade):
         sql = ''' UPDATE grades
@@ -65,14 +65,14 @@ class Teacher:
 
         self.c.execute(sql, (grade, subject_id, student_id))
         self.conn.commit()
-        return print('grade updated')
+        return print('nota actualizada')
 
     def add_student(self, subject_id, student_id):
         sql = '''INSERT INTO grades(student_id, subject_id)
                  VALUES (?, ?)'''
         self.c.execute(sql, (student_id, subject_id))
         self.c.commit()
-        return print('student added to subject')
+        return print('estudiante añadido a la asignatura')
 
     def remove_student(self, subject_id, student_id):
         sql = ''' DELETE FROM grades
@@ -80,7 +80,7 @@ class Teacher:
                   AND student_id = ? '''
         self.c.execute(sql, (subject_id, student_id))
         self.c.commit()
-        return print('student removed from record')
+        return print('estudiante removido del acta')
 
     def import_records(self, path_to_file, grouped=False):
         header = pd.read_excel(path_to_file, header=None, index_col=0, usecols=[0,1], nrows=5, skiprows=0).T
@@ -98,12 +98,7 @@ class Teacher:
 
         self.c.execute(sql)
         self.conn.commit()
-        return print('grades updated via file')
-
-    def print_records(self, grouped=False):
-        if platform.system() == 'Windows': os.startfile('~/Downloads/arts_grades.xlsx', 'print')
-        else: print('This functionallity its only available in Windows OS')
-        return
+        return print('notas actualizadas via archivo local')
 
     def get_student_info(self, student_id):
         student_dni = self.c.execute('SELECT dni FROM students WHERE id = {}'.format(student_id)).fetchall()[0][0]
@@ -116,7 +111,7 @@ class Teacher:
         print('List of subjects: ')
         print('Subject      Subject\n', student_subjects.to_string(index=False))
 
-        return print('Student information printed')
+        return print('información del alumno OK')
 
     def get_statistics(self, group_id, subject_id):
         grades = pd.read_sql('SELECT * FROM grades WHERE subject_id = {}'.format(subject_id), self.conn)
@@ -133,4 +128,4 @@ class Teacher:
         grades.groupby(pd.cut(grades['grade'], ranges)).count().plot.bar(y='grade')
         plt.show()
 
-        return print('statistics showed')
+        return print('estadisticas OK')

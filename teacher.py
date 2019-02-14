@@ -29,6 +29,7 @@ class Teacher:
         # Read tables from database
         subjects = pd.read_sql('SELECT * FROM subjects WHERE teacher_id = "{}"'.format(self.id), self.conn) # select specific teacher subjects
         students = pd.read_sql('SELECT * FROM students', self.conn) # select all students
+        Intermedio = pd.read_sql('SELECT * FROM Intermedio', self.conn)
 
         if subjects.shape[0] < 1: print('No se encontraron asignaturas')
         else:

@@ -4,6 +4,8 @@ import pandas as pd
 from getpass import getpass
 from teacher import Teacher
 from admin import Admin
+from intermedio import Intermedio
+
 
 # Main functions
 def authentication():

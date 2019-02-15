@@ -17,6 +17,8 @@ c.execute("CREATE TABLE IF NOT EXISTS admin_users(id INTEGER PRIMARY KEY, dni IN
 c.execute("CREATE TABLE IF NOT EXISTS groups (id INTEGER PRIMARY KEY, max_members INT, schedule TEXT)")
 c.execute("CREATE TABLE IF NOT EXISTS subjects(id INTEGER PRIMARY KEY,name TEXT,teacher_id INT,course TEXT,campus TEXT,semester TEXT, group_id INT, FOREIGN KEY(teacher_id) REFERENCES teachers(id), FOREIGN KEY(group_id) REFERENCES groups(id))")
 c.execute("CREATE TABLE IF NOT EXISTS grades(student_id INT,subject_id INT,grade REAL,FOREIGN KEY(student_id) REFERENCES students(id), FOREIGN KEY(subject_id) REFERENCES subjects(id))")
+c.execute("CREATE TABLE IF NOT EXISTS intermediario(id INTEGER PRIMARY KEY, student_id INT, subject_id INT, FOREIGN KEY(student_id) REFERENCES students(id), FOREIGN KEY(subject_id) REFERENCES subjects(id))")
+
 
 # Populate database with dummy records
 dummy_fnames = ["Alejandro", "Ramiro", "Omar", "Juan", "Luis", "Gonzalo"]
@@ -67,20 +69,35 @@ for i in range(10):
     course = subjects_names[i][1]
     campus = campus_name[random.randint(0,len(campus_name)-1)]
     semester = semester_name[random.randint(0,len(semester_name)-1)]
-    group_id = random.randint(1,10)
-    c.execute("INSERT INTO subjects (name, teacher_id, course, campus, semester, group_id) VALUES (?, ?, ?, ?, ?, ?)",
-               (name, teacher_id, course, campus, semester, group_id))
+    c.execute("INSERT INTO subjects (name, teacher_id, course, campus, semester) VALUES (?, ?, ?, ?, ?)",
+               (name, teacher_id, course, campus, semester))
 
+import pandas as pd
+grades_rels = []
 # grades
 for i in range(60):
     student_id = random.randint(1,20)
     subject_id = random.randint(1,10)
     grade = round(random.random()*20,2)
+    grades_rels.append([student_id, subject_id])
+
     c.execute("INSERT INTO grades (student_id, subject_id, grade) VALUES (?, ?, ?)",
                (student_id, subject_id, grade))
 
 # admin (just one admin user)
 c.execute("INSERT INTO admin_users(dni, first_name, last_name, username, password) VALUES (70000090, 'Luis', 'Romero', 'l.romero0', 'admin')")
+
+# intermediario
+intermediario_df = pd.DataFrame(grades_rels, columns=['student_id', 'subject_id'])
+for student_id in range(1,21):
+    student_subjects = intermediario_df[intermediario_df['student_id'] == student_id]['subject_id'].values.tolist()
+    if len(student_subjects) > 0:
+        for subject_id in student_subjects:
+            c.execute("INSERT INTO intermediario (student_id, subject_id) VALUES (?, ?)", (student_id, subject_id))
+    else:
+        for i in range(5):
+            subject_id = random.randint(1,12)
+            c.execute("INSERT INTO intermediario (student_id, subject_id) VALUES (?, ?)", (student_id, subject_id))
 
 # Make changes in the database
 conn.commit()
@@ -98,6 +115,8 @@ read_from_db('students')
 read_from_db('groups')
 read_from_db('subjects')
 read_from_db('grades')
+read_from_db('intermediario')
+
 
 # Close cursos and connection to database
 c.close()

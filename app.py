@@ -4,6 +4,8 @@ import pandas as pd
 from getpass import getpass
 from teacher import Teacher
 from admin import Admin
+from record import Record
+from group import Group
 
 # Main functions
 def authentication():
@@ -43,9 +45,8 @@ def teacher_app(user):
         3. Estadisticas de calificaciones\n
     """)
     sel_menu_0 = int(input("Ingrese su seleccion: "))
-    print(sel_menu_0)
-    print(sel_menu_0 == 1)
     if sel_menu_0 == 1:
+        user_record = Record(user.id)
         print("""
         Opciones disponibles:
             1. Actas por asignaturas\n
@@ -54,9 +55,9 @@ def teacher_app(user):
             """)
         sel_menu_1_1 = int(input("Ingrese su seleccion: "))
         if sel_menu_1_1 == 1:
-            user.get_records()
+            user_record.get_records()
         elif sel_menu_1_1 == 2:
-            user.get_records(grouped=True)
+            user_record.get_records(grouped=True)
         elif sel_menu_1_1 == 3:
             teacher_app(user)
 
@@ -68,17 +69,19 @@ def teacher_app(user):
             4. Exportar acta\n
             5. Importar acta\n
             6. Imprimir acta y lista provisional de alumnos\n
-            7. Volver al menu inicial
+            7. Ver asginaturas de alumnos
+            8. Volver al menu inicial
         """)
         sel_menu_1_2 = int(input("Ingrese su seleccion: "))
         if sel_menu_1_2 == 1: user.set_grades(input("Ingrese el id de la asignatura: "), input("Ingrese el id del estudiante: "), input("Ingrese la nota: "))
         elif sel_menu_1_2 == 2: user.add_student(input("Ingrese el id de la asignatura: "), input("Ingrese el id del estudiante: "))
         elif sel_menu_1_2 == 3: user.remove_student(input("Ingrese el id de la asignatura: "), input("Ingrese el id del estudiante: "))
-        elif sel_menu_1_1 == 1 and sel_menu_1_2 == 4: user.get_records(export=True)
-        elif sel_menu_1_1 == 2 and sel_menu_1_2 == 4: user.get_records(grouped=True, export=True)
+        elif sel_menu_1_1 == 1 and sel_menu_1_2 == 4: user_record.get_records(export=True)
+        elif sel_menu_1_1 == 2 and sel_menu_1_2 == 4: user_record.get_records(grouped=True, export=True)
         elif sel_menu_1_1 == 1 and sel_menu_1_2 == 5: user.import_records(input("Ingrese la ruta al archivo que desea importar\n(Formato: archivo excel tipo acta de una hoja):\n "))
         elif sel_menu_1_1 == 2 and sel_menu_1_2 == 5: user.import_records(input("Ingrese la ruta al archivo que desea importar\n(Formato: archivo excel tipo acta de una hoja):\n "), grouped=True)
-        elif sel_menu_1_2 == 6: user.get_records(print_=True)
+        elif sel_menu_1_2 == 6: user_record.get_records(print_=True)
+        elif sel_menu_1_2 == 7: user.get_students_subjects()
         teacher_app(user)
 
     elif sel_menu_0 == 2:
@@ -110,11 +113,11 @@ def admin_app(user):
         sel_menu_1 = int(input("Ingrese su selección: "))
         if sel_menu_1 == 1:
             print(''' ¿Qué operación desea realizar?\n
-            1. Alta\n
-            2. Baja\n
-            3. Modificación\n
-            4. Consulta\n
-            5. Volver a menu inicial ''')
+                                1. Alta\n
+                                2. Baja\n
+                                3. Modificación\n
+                                4. Consulta\n
+                                5. Volver a menu inicial ''')
             action = int(input("Ingrese su selección: "))
             if action == 1: user.manage_students(operation='insert')
             elif action == 2: user.manage_students(operation='delete')
@@ -145,7 +148,7 @@ def admin_app(user):
             if action == 1: user.manage_groups(operation='insert')
             elif action == 2: user.manage_groups(operation='delete')
             elif action == 3: user.manage_groups(operation='update')
-            elif action == 4: user.manage_groups(operation='select')
+            elif action == 4: Group().get_groups(int(input("Ingrese el id del grupo que desea consultar: ")))
 
         elif sel_menu_1 == 4: user.get_historical_records(input("Ingrese el id del alumno: "))
         admin_app(user)

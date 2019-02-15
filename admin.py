@@ -131,7 +131,7 @@ class Admin(Teacher):
             sql = "SELECT * FROM groups WHERE id = {}".format(id)
             data = pd.read_sql(sql, self.conn)
 
-            if data.shape[0] < 1: print("No existen alumnos con ese id")
+            if data.shape[0] < 1: print("No existen grupos con ese id")
             else: print(data.to_string(index=False))
 
         self.conn.commit()

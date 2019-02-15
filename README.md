@@ -2,10 +2,8 @@
 
 Para utilizar esta aplicacion deben tener instalado Python 3 o superior.  
 
-Clonar el repositorio mediante terminal (linux y mac) utilizando el comando:  
-$ git clone https://github.com/arodriguez1495/oop_app.git  
-
-Para el caso de windows debes instalar git (https://github.com/arodriguez1495/oop_app.git) y utilizar el mismo comando.  
+Clonar el repositorio mediante terminal (linux y mac) o cmd (windows) utilizando el comando:  
+$ git clone https://github.com/arodriguez1495/oop_app.git
 
 Luego entrar a la carpeta:  
 $ cd oop_app/  
@@ -23,8 +21,5 @@ Estos son los archivos necesarios para el funcionamiento de la aplicacion:
 3. admin.py: Clase de administrador (herencia de profesor)
 4. school.db: Base de datos de la escuela
 
-Ignorar los siguientes archivos:
-1. example-record.xlsx: archivo que use para testear la importacion y exportacion de actas a Excel
-2. gui.py: archivo que deje a medias para hacer una interfaz grafica fuera de terminal
-3. sqlite.py: archivo que utilize para crear la bd (tabla, conexiones y generar datos ficticios)
-4. test.py: archivo que utilize para probar y revisar errores del codigo
+En el archivo "sqlite.py" se encuentra el script utilizado para crear la bd "school.db" (tabla, conexiones y generar datos ficticios).
+

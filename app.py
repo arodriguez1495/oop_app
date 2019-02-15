@@ -4,13 +4,8 @@ import pandas as pd
 from getpass import getpass
 from teacher import Teacher
 from admin import Admin
-<<<<<<< HEAD
 from record import Record
 from group import Group
-=======
-from intermedio import Intermedio
-
->>>>>>> f9b61dd904101e3d0fa552d682147930f7e68991
 
 # Main functions
 def authentication():

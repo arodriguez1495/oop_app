@@ -21,8 +21,6 @@ class Teacher:
         self.conn = sqlite3.connect('school.db')
         self.c = self.conn.cursor()
 
-<<<<<<< HEAD
-=======
     def get_records(self, grouped=False, export=False, print_=False):
         if export:
             filename  = '{}-records-{:%d-%m-%Y_%H-%M-%S}.xlsx'.format(self.username, datetime.now()) # Create name for exported record
@@ -60,7 +58,6 @@ class Teacher:
 
         return print('registros OK\n')
 
->>>>>>> f9b61dd904101e3d0fa552d682147930f7e68991
     def set_grades(self, subject_id, student_id, grade):
         sql = ''' UPDATE grades
                   SET grade = ?
